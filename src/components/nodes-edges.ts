@@ -1,7 +1,7 @@
 import allData from './graphData'
 // ['default', 'step', 'smoothstep', 'straight'];
 const position = { x: 0, y: 0 }
-const edgeType = 'default'
+const edgeType = 'smoothstep'
 
 export const initialNodes = allData.data.nodes.map((item) => {
   return {
