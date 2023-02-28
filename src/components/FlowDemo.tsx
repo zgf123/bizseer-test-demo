@@ -86,6 +86,7 @@ const LayoutFlow = () => {
         onConnect={onConnect}
         connectionLineType={ConnectionLineType.SmoothStep}
         fitView
+        minZoom={0.1}
       />
       <div className="controls">
         <button onClick={() => onLayout('TB')}>vertical layout</button>
