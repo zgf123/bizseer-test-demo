@@ -43,6 +43,8 @@ const getLayoutedElements = (nodes: any, edges: any, direction = 'LR') => {
     return node
   })
 
+  console.log(nodes, edges)
+
   return { nodes, edges }
 }
 
