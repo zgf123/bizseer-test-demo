@@ -1,28 +1,24 @@
-const arr = [6, 7, 811, 5, 9, 31, 4, 1, 2]
+const arr = [6, 7, 28, 5, 9, 3, 4, 11, 2]
 
-var counter = []
-function sort(arr) {
-  var mod = 10
-  var dev = 1
-  const maxDigit = Math.ceil(Math.log10(Math.max(...arr)))
-  for (var i = 0; i < maxDigit; i++, dev *= 10, mod *= 10) {
-    for (var j = 0; j < arr.length; j++) {
-      const buketIndex = Math.floor((arr[j] % mod) / dev)
-      counter[buketIndex]
-        ? counter[buketIndex].push(arr[j])
-        : (counter[buketIndex] = []).push(arr[j])
+function radixSort(arr) {
+  const max = Math.max(...arr)
+  const maxDigit = Math.ceil(Math.log10(max))
+  let radixBase = 10
+  let bitSignificance = 1
+  for (let i = 0; i < maxDigit; i++, radixBase *= 10, bitSignificance *= 10) {
+    const buketArr = []
+    for (let j = 0; j < arr.length; j++) {
+      const index = Math.floor((arr[j] % radixBase) / bitSignificance)
+      if (!buketArr[index]) buketArr[index] = []
+      buketArr[index].push(arr[j])
     }
-    var pos = 0
-    for (var j = 0; j < counter.length; j++) {
-      var value = null
-      if (counter[j] != null) {
-        while ((value = counter[j].shift()) != null) {
-          arr[pos++] = value
-        }
-      }
+    arr = []
+    for (let j = 0; j < buketArr.length; j++) {
+      if (buketArr[j]) arr.push(...buketArr[j])
     }
   }
+
   return arr
 }
 
-console.log(sort(arr))
+console.log(radixSort(arr))
