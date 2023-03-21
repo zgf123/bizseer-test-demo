@@ -1,6 +1,10 @@
-/* craco.config.js */
+const MyPlugin = require('./myPlugin')
+
 module.exports = {
+  webpack: {
+    plugins: [(compiler) => MyPlugin(compiler, 111)],
+  },
   devServer: {
-    port: 8888
-  }
-};
+    port: 8888,
+  },
+}
