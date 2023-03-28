@@ -2,13 +2,21 @@ const path = require('path')
 const fs = require('fs-extra')
 
 module.exports = (compiler, params) => {
+  compiler.hooks.run.tap('aaa', (compilation) => {
+    console.log(2)
+  })
+  compiler.hooks.beforeRun.tap('aaa1', (compilation) => {
+    console.log(1)
+  })
+  compiler.hooks.normalModuleFactory.tap('aaa2', (compilation) => {
+    console.log(compilation)
+  })
+
   // compiler.hooks.emit.tap('CodeBeautify', (compilation) => {
   // const assets = compilation.getAssets()
-
   // compilation.hooks.buildModule.tap('SourceMapDevToolModuleOptionsPlugin', (module) => {
   //   console.log(123)
   // })
-
   // Object.keys(compilation.assets).forEach((data) => {
   //   console.log(data)
   //   let content = compilation.assets[data].source() // 获取处理的文本
@@ -25,12 +33,10 @@ module.exports = (compiler, params) => {
   //   }
   // })
   // })
-
-  compiler.hooks.emit.tap('MyPlugin', (compilation) => {
-    console.log(compilation.assets)
-    console.log(JSON.stringify(compilation.assets))
-
-    const fileContent = JSON.stringify(compilation.assets)
-    fs.outputFileSync(path.resolve(__dirname, './log.txt'), fileContent)
-  })
+  // compiler.hooks.emit.tap('MyPlugin', (compilation) => {
+  //   console.log(compilation.assets)
+  //   console.log(JSON.stringify(compilation.assets))
+  //   const fileContent = JSON.stringify(compilation.assets)
+  //   fs.outputFileSync(path.resolve(__dirname, './log.txt'), fileContent)
+  // })
 }

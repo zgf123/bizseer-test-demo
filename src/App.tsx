@@ -2,14 +2,14 @@
 import React from 'react'
 import FlowDemo from './components/FlowDemo'
 import UseDemo from './components/UseDemo'
-import { Foo } from 'adder-editor'
+import EditorDemo from './components/EditorDemo'
 
 const state: number = 1
 const App = () => {
   return (
     <>
       <div>
-        <Foo title="heheda" />
+        <EditorDemo />
       </div>
       <div className="App">{state === 1 ? <FlowDemo /> : <UseDemo />}</div>
     </>
