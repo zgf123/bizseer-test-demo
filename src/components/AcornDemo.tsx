@@ -9,9 +9,9 @@ const obj = {
 }
 
 obj.func.bind({ b: 2 })()
-const obj2 = {
-  b: 2,
-}
+// const obj2 = {
+//   b: 2,
+// }
 
 const code = `const fn = a => {
   let i = 1;

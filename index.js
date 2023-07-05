@@ -1,19 +1,35 @@
-function minCoinChange(coins, sum) {
-  const cache = []
-  for (let i = 0; i < coins.length; i++) {
-    cache[i] = []
-    for (let j = 0; j <= sum; j++) {
-      const amount = j - coins[i]
-      if (amount === 0) {
-        cache[i][j] = 1
-      } else if (amount > 0 && cache[i][amount] > 0) {
-        cache[i][j] = 1 + cache[i][amount]
-      } else {
-        cache[i][j] = i >= 1 ? cache[i - 1][j] : 0
+function knapSack(goods, capacity) {
+  const pack = []
+  for (let i = 0; i < goods.length; i++) {
+    pack[i] = []
+    for (let w = 0; w <= capacity; w++) {
+      pack[i][w] = i > 0 ? pack[i - 1][w] : 0
+      let [weight, value] = goods[i]
+      if (w >= weight) {
+        const newValue = value + pack[i][w - weight]
+        if (newValue > pack[i][w]) pack[i][w] = newValue
       }
     }
   }
-  return cache
+  const res = []
+  let i = goods.length - 1
+  let k = capacity
+  while (i >= 0 && pack[i][k]) {
+    if (i > 0 && pack[i][k] === pack[i - 1][k]) {
+      i--
+    } else {
+      res.push(goods[i])
+      k -= goods[i][0]
+    }
+  }
+  const maxValue = pack[goods.length - 1][capacity]
+  return { maxValue, res }
 }
 
-console.log(minCoinChange([1, 3, 5, 8], 58))
+const capacity = 11
+const goods = [
+  [2, 3],
+  [2, 5],
+  [3, 18],
+]
+console.log(knapSack(goods, capacity))
