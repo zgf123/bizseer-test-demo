@@ -6,6 +6,8 @@ import UseDemo from './components/UseDemo'
 import EditorDemo from './components/EditorDemo'
 import AcornDemo from './components/AcornDemo'
 import SubFlowDemo from './components/SubFlowDemo'
+import SubFlowDemo1 from './components/SubFlowDemo1'
+import MonacoDemo from './components/MonacoDemo'
 
 const App = () => {
   return (
@@ -17,6 +19,8 @@ const App = () => {
         <Route path="/editor-demo" element={<EditorDemo />} />
         <Route path="/acorn-demo" element={<AcornDemo />} />
         <Route path="/subflow-demo" element={<SubFlowDemo />} />
+        <Route path="/subflow-demo1" element={<SubFlowDemo1 />} />
+        <Route path="/monaco-demo" element={<MonacoDemo />} />
       </Routes>
     </BrowserRouter>
   )
