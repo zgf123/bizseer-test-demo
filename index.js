@@ -1,35 +1,25 @@
 function knapSack(goods, capacity) {
   const pack = []
-  for (let i = 0; i < goods.length; i++) {
-    pack[i] = []
-    for (let w = 0; w <= capacity; w++) {
-      pack[i][w] = i > 0 ? pack[i - 1][w] : 0
-      let [weight, value] = goods[i]
-      if (w >= weight) {
-        const newValue = value + pack[i][w - weight]
-        if (newValue > pack[i][w]) pack[i][w] = newValue
+  function makePack(weight) {
+    if (pack[weight]) return pack[weight]
+    let temp = []
+    for (let i = 0; i < goods.length; i++) {
+      const [w, v] = goods[i]
+      if (weight - w >= 0) {
+        const subpack = makePack(weight - w)
+        const oldValue = temp.reduce((prev, cur) => (prev += cur[1]), 0)
+        const newValue = subpack.reduce((prev, cur) => (prev += cur[1]), 0) + v
+        if (newValue > oldValue) temp = [...subpack, goods[i]]
       }
     }
+    return (pack[weight] = temp)
   }
-  const res = []
-  let i = goods.length - 1
-  let k = capacity
-  while (i >= 0 && pack[i][k]) {
-    if (i > 0 && pack[i][k] === pack[i - 1][k]) {
-      i--
-    } else {
-      res.push(goods[i])
-      k -= goods[i][0]
-    }
-  }
-  const maxValue = pack[goods.length - 1][capacity]
-  return { maxValue, res }
+  return makePack(capacity)
 }
 
-const capacity = 11
 const goods = [
   [2, 3],
   [2, 5],
   [3, 18],
 ]
-console.log(knapSack(goods, capacity))
+console.log(knapSack(goods, 11))

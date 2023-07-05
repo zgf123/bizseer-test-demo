@@ -43,15 +43,12 @@ const getLayoutedElements = (nodes: any, edges: any, direction = 'LR') => {
     return node
   })
 
-  console.log(nodes, edges)
+  // console.log(nodes, edges)
 
   return { nodes, edges }
 }
 
-const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
-  initialNodes,
-  initialEdges
-)
+const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(initialNodes, initialEdges)
 
 const LayoutFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(layoutedNodes)
@@ -59,18 +56,12 @@ const LayoutFlow = () => {
 
   const onConnect = useCallback(
     (params: any) =>
-      setEdges((eds) =>
-        addEdge({ ...params, type: ConnectionLineType.SmoothStep, animated: true }, eds)
-      ),
+      setEdges((eds) => addEdge({ ...params, type: ConnectionLineType.SmoothStep, animated: true }, eds)),
     []
   )
   const onLayout = useCallback(
     (direction: any) => {
-      const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
-        nodes,
-        edges,
-        direction
-      )
+      const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(nodes, edges, direction)
 
       setNodes([...layoutedNodes])
       setEdges([...layoutedEdges])
