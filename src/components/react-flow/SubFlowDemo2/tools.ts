@@ -147,7 +147,7 @@ function genGraph({ nodes = [], edges = [] }: TElements) {
 export async function createLayout(els: TElements) {
   const { elk, graph } = genGraph(els)
   const layout = await elk.layout(graph)
-  const commonOpt = { targetPosition: Position.Left, sourcePosition: Position.Right, selectable: false }
+  const commonOpt = { targetPosition: Position.Left, sourcePosition: Position.Right }
   const nodes = layout.children?.reduce((result: CustomNode[], current) => {
     result.push({
       id: current.id,

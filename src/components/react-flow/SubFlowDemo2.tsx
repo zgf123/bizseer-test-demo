@@ -32,8 +32,10 @@ const Demo = () => {
           fitView
           minZoom={0.1}
           fitViewOptions={{ maxZoom: 1 }}
+          elementsSelectable={false}
+          proOptions={{ hideAttribution: true }}
           defaultEdgeOptions={{
-            zIndex: 100,
+            zIndex: 10,
           }}
         >
           <MiniMap />
