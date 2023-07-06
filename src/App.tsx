@@ -1,12 +1,12 @@
 /* eslint-disable */
 import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import FlowDemo from './components/FlowDemo'
-import UseDemo from './components/UseDemo'
+import FlowDemo from './components/react-flow/FlowDemo'
+import UseDemo from './components/react-flow/UseDemo'
 import EditorDemo from './components/EditorDemo'
 import AcornDemo from './components/AcornDemo'
-import SubFlowDemo from './components/SubFlowDemo'
-import SubFlowDemo1 from './components/SubFlowDemo1'
+import SubFlowDemo from './components/react-flow/SubFlowDemo'
+import SubFlowDemo1 from './components/react-flow/SubFlowDemo1'
 import MonacoDemo from './components/MonacoDemo'
 
 const App = () => {
