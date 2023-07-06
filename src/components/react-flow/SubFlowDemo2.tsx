@@ -1,180 +1,48 @@
-/* eslint-disable */
-import { useEffect, useState } from 'react'
-import ReactFlow, { Controls, Background, ReactFlowProvider } from 'reactflow'
-import 'reactflow/dist/style.css'
-import ELK from 'elkjs/lib/elk.bundled.js'
+import React, { useEffect } from 'react'
+import ReactFlow, { ReactFlowProvider, useEdgesState, useNodesState, Background, MiniMap, Controls } from 'reactflow'
+import { initialNodes, initialEdges, ECustomType, createLayout } from './SubFlowDemo2/tools'
+import SubNode from './SubFlowDemo2/SubNode'
+import GroupNode from './SubFlowDemo2/GroupNode'
 
-const initialNodes = [
-  {
-    id: 'A',
-    group: '1',
-  },
-  {
-    id: 'B',
-    group: '1',
-  },
-  {
-    id: 'C',
-    group: '1',
-  },
-  {
-    id: 'D',
-    group: '2',
-  },
-  {
-    id: 'E',
-    group: '2',
-  },
-  {
-    id: 'F',
-    group: '3',
-  },
-  {
-    id: 'G',
-    group: '3',
-  },
-  {
-    id: 'H',
-    group: '1',
-  },
-  {
-    id: 'I',
-    group: '1',
-  },
-  {
-    id: 'J',
-    group: '1',
-  },
-]
-
-const initialGroups = [
-  {
-    id: '1',
-    width: 100,
-    height: 100,
-  },
-  {
-    id: '2',
-    width: 100,
-    height: 100,
-  },
-  {
-    id: '3',
-    width: 100,
-    height: 100,
-  },
-]
-
-const initialEdges = [
-  { id: '1', source: '1', target: '2' },
-  { id: '2', source: '2', target: '3' },
-  { id: '3', source: 'A', target: 'B' },
-  { id: '4', source: 'A', target: 'I' },
-  { id: '5', source: 'B', target: 'C' },
-  { id: '6', source: 'B', target: 'H' },
-  { id: '7', source: 'C', target: 'D' },
-  { id: '8', source: 'E', target: 'F' },
-]
-
-const elk = new ELK()
-
-const graph = {
-  id: 'root',
-  layoutOptions: {
-    // 'elk.algorithm': 'layered',
-    'elk.direction': 'RIGHT',
-  },
-  children: initialGroups.map((group) => ({
-    id: group.id,
-    width: group.width,
-    height: group.height,
-    layoutOptions: {
-      'elk.direction': 'RIGHT',
-    },
-    children: initialNodes
-      .filter((node) => node.group === group.id)
-      .map((node) => ({
-        id: node.id,
-        width: 100,
-        height: 50,
-        layoutOptions: {
-          'elk.direction': 'RIGHT',
-        },
-      })),
-  })),
-  edges: initialEdges.map((edge) => ({
-    id: edge.id,
-    sources: [edge.source],
-    targets: [edge.target],
-  })),
+const nodeTypes = {
+  [ECustomType.subNode]: SubNode,
+  [ECustomType.groupNode]: GroupNode,
 }
 
-async function createLayout() {
-  const layout = await elk.layout(graph)
-  const nodes = layout.children?.reduce((result: any[], current) => {
-    result.push({
-      id: current.id,
-      position: { x: current.x, y: current.y },
-      data: { label: current.id },
-      targetPosition: 'left',
-      sourcePosition: 'right',
-      style: { width: current.width, height: current.height },
-    })
-
-    current.children?.forEach((child) =>
-      result.push({
-        id: child.id,
-        position: { x: child.x, y: child.y },
-        data: { label: child.id },
-        targetPosition: 'left',
-        sourcePosition: 'right',
-        style: { width: child.width, height: child.height },
-        parentNode: current.id,
-      })
-    )
-
-    return result
-  }, [])
-
-  return {
-    nodes,
-    edges: initialEdges,
-  }
-}
-
-function Flow() {
-  const [graph, setGraph] = useState<any>(null)
+const Demo = () => {
+  const [nodes, setNodes, onNodesChange] = useNodesState([])
+  const [edges, setEdges, onEdgesChange] = useEdgesState([])
 
   useEffect(() => {
-    ;(async () => {
-      const { nodes, edges } = await createLayout()
-      setGraph({ nodes, edges } as any)
-    })()
+    createLayout({ nodes: initialNodes, edges: initialEdges }).then((res) => {
+      setNodes(res.nodes || [])
+      setEdges(res.edges)
+    })
   }, [])
 
   return (
-    <div style={{ height: '100vh', width: '100%' }}>
-      {graph && (
+    <ReactFlowProvider>
+      <div style={{ width: '100vw', height: '100vh' }}>
         <ReactFlow
-          defaultNodes={graph?.nodes}
-          defaultEdges={graph?.edges}
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          nodeTypes={nodeTypes}
           fitView
+          minZoom={0.1}
+          fitViewOptions={{ maxZoom: 1 }}
           defaultEdgeOptions={{
             zIndex: 100,
           }}
         >
-          <Background />
+          <MiniMap />
           <Controls />
+          <Background />
         </ReactFlow>
-      )}
-    </div>
-  )
-}
-
-export default function () {
-  return (
-    <ReactFlowProvider>
-      <Flow />
+      </div>
     </ReactFlowProvider>
   )
 }
+
+export default Demo
