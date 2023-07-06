@@ -147,15 +147,14 @@ function genGraph({ nodes = [], edges = [] }: TElements) {
 export async function createLayout(els: TElements) {
   const { elk, graph } = genGraph(els)
   const layout = await elk.layout(graph)
+  const commonOpt = { targetPosition: Position.Left, sourcePosition: Position.Right, selectable: false }
   const nodes = layout.children?.reduce((result: CustomNode[], current) => {
     result.push({
       id: current.id,
       type: ECustomType.groupNode,
       position: { x: current.x || 0, y: current.y || 0 },
       data: { value: current.id, width: current.width, height: current.height },
-      targetPosition: Position.Left,
-      sourcePosition: Position.Right,
-      selectable: false,
+      ...commonOpt,
     })
 
     current.children?.forEach((child) =>
@@ -164,10 +163,8 @@ export async function createLayout(els: TElements) {
         type: ECustomType.subNode,
         position: { x: child.x || 0, y: child.y || 0 },
         data: { value: child.id, width: child.width, height: child.height },
-        targetPosition: Position.Left,
-        sourcePosition: Position.Right,
         parentNode: current.id,
-        selectable: false,
+        ...commonOpt,
       })
     )
     return result
