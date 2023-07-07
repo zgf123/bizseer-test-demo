@@ -164,6 +164,7 @@ export async function createLayout(els: TElements) {
         position: { x: child.x || 0, y: child.y || 0 },
         data: { value: child.id, width: child.width, height: child.height },
         parentNode: current.id,
+        zIndex: 11,
         ...commonOpt,
       })
     )
