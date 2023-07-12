@@ -1,23 +1,43 @@
-function minCoinChange(coins, sum) {
-  const cache = []
-
-  for (let i = 0; i <= sum; i++) {
+function lcsequense(s1, s2) {
+  let cache = []
+  let solution = []
+  for (let i = 0; i <= s1.length; i++) {
     cache[i] = []
-    for (let j = 0; j < coins.length; j++) {
-      const coin = coins[j]
-      const amount = i - coin
-      if (amount === 0) {
-        cache[i] = [coin]
-      } else if (amount > 0 && cache[amount].length) {
-        const newmin = [...cache[amount], coin]
-        if (!cache[i].length || newmin.length < cache[i].length) {
-          cache[i] = newmin
-        }
+    solution[i] = []
+    for (let j = 0; j <= s2.length; j++) {
+      if (i == 0 || j == 0) {
+        cache[i][j] = 0
+        solution[i][j] = '0'
+      } else if (s1[i - 1] === s2[j - 1]) {
+        cache[i][j] = cache[i - 1][j - 1] + 1
+        solution[i][j] = 'diagonal'
+      } else {
+        const a = cache[i - 1][j]
+        const b = cache[i][j - 1]
+        cache[i][j] = a > b ? a : b
+        solution[i][j] = a > b ? 'top' : 'left'
       }
     }
   }
 
-  return cache[sum]
+  let res = []
+  let i = s1.length
+  let j = s2.length
+  let p = solution[i][j]
+  while (p !== '0') {
+    if (solution[i][j] === 'diagonal') {
+      res.unshift(s1[i - 1])
+      i--
+      j--
+    } else if (solution[i][j] === 'left') {
+      j--
+    } else if (solution[i][j] === 'top') {
+      i--
+    }
+    p = solution[i][j]
+  }
+
+  return res.join('')
 }
 
-console.log(minCoinChange([1, 3, 4, 5], 7))
+console.log(lcsequense('afbsfd', 'fdsand'))
