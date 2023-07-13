@@ -10,8 +10,9 @@ import SubFlowDemo from './components/react-flow/SubFlowDemo'
 import SubFlowDemo1 from './components/react-flow/SubFlowDemo1'
 import SubFlowDemo2 from './components/react-flow/SubFlowDemo2'
 import MonacoDemo from './components/MonacoDemo'
-import LayoutDemo1 from './components/flex-layout/LayoutDemo1'
-import LayoutDemo2 from './components/flex-layout/LayoutDemo2'
+import LayoutDemo1 from './components/layout/LayoutDemo1'
+import LayoutDemo2 from './components/layout/LayoutDemo2'
+import GetBoundingClientRect from './components/layout/GetBoundingClientRect'
 
 const App = () => {
   return (
@@ -28,6 +29,7 @@ const App = () => {
         <Route path="/monaco-demo" element={<MonacoDemo />} />
         <Route path="/layout-demo1" element={<LayoutDemo1 />} />
         <Route path="/layout-demo2" element={<LayoutDemo2 />} />
+        <Route path="/layout-get-bounding-client-rect" element={<GetBoundingClientRect />} />
       </Routes>
     </BrowserRouter>
   )
