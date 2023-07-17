@@ -1,20 +1,12 @@
 function lcs(s1, s2) {
-  const vector = [[]]
-  for (let i = 1; i <= s1.length; i++) {
-    let [prev, cur] = [[], []]
-    for (let j = 1; j <= s2.length; j++) {
-      if (!vector[j]) vector[j] = []
-      ;[prev, cur] = [cur, vector[j]]
-      if (s1[i - 1] === s2[j - 1]) {
-        vector[j] = [...prev, s2[j - 1]]
-      } else {
-        let a = vector[j - 1]
-        let b = cur
-        vector[j] = a.length > b.length ? a : b
-      }
-    }
+  if (s1.length === 0 || s2.length === 0) return ''
+  if (s1[0] === s2[0]) {
+    return s1[0] + lcs(s1.slice(1), s2.slice(1))
+  } else {
+    const res1 = lcs(s1, s2.slice(1))
+    const res2 = lcs(s1.slice(1), s2)
+    return res1.length > res2.length ? res1 : res2
   }
-  return vector.pop()
 }
 
-console.log(lcs('bsbininm', 'jmjkbkjkv'))
+console.log(lcs('acbaed', 'abcadf'))
