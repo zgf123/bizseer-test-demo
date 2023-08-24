@@ -1,22 +1,55 @@
-function lcs(s1, s2) {
-  const cache = Array.from({ length: s1.length }, () => new Array(s2.length))
-  function makeLcs(s1, s2) {
-    if (!s1.length || !s2.length) return ''
-    const i = s1.length - 1
-    const j = s2.length - 1
-    if (cache[i][j]) return cache[i][j]
-    if (s1[0] === s2[0]) {
-      return (cache[i][j] = s1[0] + makeLcs(s1.slice(1), s2.slice(1)))
-    } else {
-      const res1 = makeLcs(s1, s2.slice(1))
-      const res2 = makeLcs(s1.slice(1), s2)
-      return (cache[i][j] = res1.length > res2.length ? res1 : res2)
+function matrixChainOrder(p) {
+  const n = p.length - 1
+  const m = []
+  const s = []
+  const cache = []
+  for (let i = 1; i <= n; i++) {
+    m[i] = []
+    m[i][i] = 0
+    cache[i] = []
+    cache[i][i] = 'A' + i
+  }
+
+  for (let i = 0; i <= n; i++) {
+    s[i] = []
+    for (let j = 0; j <= n; j++) {
+      s[i][j] = 0
     }
   }
-  return makeLcs(s1, s2)
+
+  for (let l = 2; l <= n; l++) {
+    for (let i = 1; i <= n - l + 1; i++) {
+      const j = i + l - 1
+      m[i][j] = Infinity
+      for (let k = i; k <= j - 1; k++) {
+        const q = m[i][k] + m[k + 1][j] + p[i - 1] * p[k] * p[j]
+        if (q < m[i][j]) {
+          m[i][j] = q
+          s[i][j] = k
+          cache[i][j] = `(${cache[i][k]}${cache[k + 1][j]})`
+        }
+      }
+    }
+  }
+
+  let res = ''
+  function printOptimalParenthesis(s, i, j) {
+    if (i === j) {
+      res += 'A' + i + ''
+    } else {
+      res += '('
+      printOptimalParenthesis(s, i, s[i][j])
+      printOptimalParenthesis(s, s[i][j] + 1, j)
+      res += ')'
+    }
+  }
+  printOptimalParenthesis(s, 1, n)
+
+  console.log(cache[1][n])
+  console.log(res)
+  return m[1][n]
 }
 
-console.time()
-console.log(lcs('pmjghexybyrgzczy', 'hafcdqbgncrcbihkd'))
-// console.log(lcs('abcde', 'ace'))
-console.timeEnd()
+const p = [10, 100, 5, 50, 1]
+console.log(matrixChainOrder(p))
+// 1750
