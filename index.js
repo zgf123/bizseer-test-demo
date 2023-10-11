@@ -1,24 +1,53 @@
-function ratInMaze(maze) {
-  let solution = Array.from({ length: maze.length }, () => new Array(maze[0].length).fill(0))
-  return findPath(maze, solution, 0, 0) ? solution : null
+function sudokuSolver(matrix) {
+  return solveSudoku(matrix) ? matrix : null
 }
-
-function findPath(maze, solution, x, y) {
-  let isSafe = x >= 0 && y >= 0 && x < maze.length && y < maze[0].length && maze[x][y] === 1
-  if (isSafe) {
-    solution[x][y] = 1
-    if (x === maze.length - 1 && y === maze[0].length - 1) return true
-    if (findPath(maze, solution, x + 1, y)) return true
-    if (findPath(maze, solution, x, y + 1)) return true
-    solution[x][y] = 0
+function solveSudoku(matrix) {
+  let x = 0
+  let y = 0
+  let isBlank = false
+  for (x = 0; x < matrix.length; x++) {
+    for (y = 0; y < matrix[x].length; y++) {
+      if (matrix[x][y] === 0) {
+        isBlank = true
+        break
+      }
+    }
+    if (isBlank === true) break
+  }
+  if (isBlank === false) return true
+  for (let num = 1; num <= 9; num++) {
+    if (isSafe(matrix, x, y, num)) {
+      matrix[x][y] = num
+      if (solveSudoku(matrix)) return true
+      matrix[x][y] = 0
+    }
   }
   return false
 }
-const maze = [
-  [1, 1, 1, 1, 1],
-  [0, 0, 0, 1, 1],
-  [1, 1, 1, 1, 1],
-  [1, 0, 0, 1, 0],
-  [1, 1, 1, 1, 1],
+function isSafe(matrix, x, y, num) {
+  for (let j = 0; j < matrix.length; j++) {
+    if (matrix[x][j] === num) return false
+  }
+  for (let i = 0; i < matrix.length; i++) {
+    if (matrix[i][y] === num) return false
+  }
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 3; j++) {
+      if (matrix[x - (x % 3) + i][y - (y % 3) + j] === num) return false
+    }
+  }
+  return true
+}
+
+const sudokuGrid = [
+  [5, 3, 0, 0, 7, 0, 0, 0, 0],
+  [6, 0, 0, 1, 9, 5, 0, 0, 0],
+  [0, 9, 8, 0, 0, 0, 0, 6, 0],
+  [8, 0, 0, 0, 6, 0, 0, 0, 3],
+  [4, 0, 0, 8, 0, 3, 0, 0, 1],
+  [7, 0, 0, 0, 2, 0, 0, 0, 6],
+  [0, 6, 0, 0, 0, 0, 2, 8, 0],
+  [0, 0, 0, 4, 1, 9, 0, 0, 5],
+  [0, 0, 0, 0, 8, 0, 0, 7, 9],
 ]
-console.log(ratInMaze(maze))
+console.log(sudokuSolver(sudokuGrid))
