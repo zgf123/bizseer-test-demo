@@ -179,50 +179,50 @@ class RedBlackTree {
   fixDelete(node) {
     while (node !== this.root && node.color === 'black') {
       if (node === node.parent.left) {
-        let siblingNode = node.parent.right
-        if (siblingNode.color === 'red') {
-          siblingNode.color = 'black'
+        let uncle = node.parent.right
+        if (uncle.color === 'red') {
+          uncle.color = 'black'
           node.parent.color = 'red'
           this.rotateRR(node.parent)
-          siblingNode = node.parent.right
+          uncle = node.parent.right
         }
-        if (siblingNode.left.color === 'black' && siblingNode.right.color === 'black') {
-          siblingNode.color = 'red'
+        if (uncle.left.color === 'black' && uncle.right.color === 'black') {
+          uncle.color = 'red'
           node = node.parent
         } else {
-          if (siblingNode.right.color === 'black') {
-            siblingNode.left.color = 'black'
-            siblingNode.color = 'red'
-            this.rotateLL(siblingNode)
-            siblingNode = node.parent.right
+          if (uncle.right.color === 'black') {
+            uncle.left.color = 'black'
+            uncle.color = 'red'
+            this.rotateLL(uncle)
+            uncle = node.parent.right
           }
-          siblingNode.color = node.parent.color
+          uncle.color = node.parent.color
           node.parent.color = 'black'
-          siblingNode.right.color = 'black'
+          uncle.right.color = 'black'
           this.rotateRR(node.parent)
           node = this.root // 结束循环
         }
       } else {
-        let siblingNode = node.parent.left
-        if (siblingNode.color === 'red') {
-          siblingNode.color = 'black'
+        let uncle = node.parent.left
+        if (uncle.color === 'red') {
+          uncle.color = 'black'
           node.parent.color = 'red'
           this.rotateLL(node.parent)
-          siblingNode = node.parent.left
+          uncle = node.parent.left
         }
-        if (siblingNode.right.color === 'black' && siblingNode.left.color === 'black') {
-          siblingNode.color = 'red'
+        if (uncle.right.color === 'black' && uncle.left.color === 'black') {
+          uncle.color = 'red'
           node = node.parent
         } else {
-          if (siblingNode.left.color === 'black') {
-            siblingNode.right.color = 'black'
-            siblingNode.color = 'red'
-            this.rotateRR(siblingNode)
-            siblingNode = node.parent.left
+          if (uncle.left.color === 'black') {
+            uncle.right.color = 'black'
+            uncle.color = 'red'
+            this.rotateRR(uncle)
+            uncle = node.parent.left
           }
-          siblingNode.color = node.parent.color
+          uncle.color = node.parent.color
           node.parent.color = 'black'
-          siblingNode.left.color = 'black'
+          uncle.left.color = 'black'
           this.rotateLL(node.parent)
           node = this.root // 结束循环
         }
