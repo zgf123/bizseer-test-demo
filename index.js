@@ -112,7 +112,7 @@ class RedBlackTree {
           node = node.parent.parent
         } else {
           if (node === node.parent.left) {
-            // 情形 2B：节点是左侧子节点——左旋转
+            // 情形 2B：节点是左侧子节点——右旋转
             node = node.parent
             this.rotateLL(node)
           }
