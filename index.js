@@ -1,7 +1,7 @@
 class Node {
-  constructor(key, color) {
+  constructor(key) {
     this.key = key
-    this.color = color
+    this.color = 'red'
     this.left = null
     this.right = null
     this.parent = null
@@ -47,7 +47,7 @@ class RedBlackTree {
 
   // 插入节点
   insert(key) {
-    const newNode = new Node(key, 'red')
+    const newNode = new Node(key)
     if (!this.root) {
       this.root = newNode
       newNode.color = 'black'
@@ -72,7 +72,7 @@ class RedBlackTree {
           break
         }
       } else {
-        return // 值相同时不插入
+        return // key值相同时不插入
       }
     }
     this.fixInsert(newNode)
@@ -155,7 +155,7 @@ class RedBlackTree {
           // 如果当前节点是黑色节点，被删除后失去平衡，需要重新平衡
           if (curNode.color === 'black') this.fixDelete(subNode)
         } else if (!curNode.parent) {
-          // 如果没有子节点，并且是跟节点
+          // 如果没有子节点，并且是根节点
           this.root = null
         } else {
           // 如果没有子节点
@@ -177,58 +177,77 @@ class RedBlackTree {
   }
   // 删除节点后修复红黑树
   fixDelete(node) {
+    // 补上来的节点是黑色
     while (node !== this.root && node.color === 'black') {
+      // 情形A：删除的黑色节点在左边
       if (node === node.parent.left) {
-        let uncle = node.parent.right
-        if (uncle.color === 'red') {
-          uncle.color = 'black'
+        // 从右边兄弟那里借调黑色节点
+        let brother = node.parent.right
+        // 情形A1：兄弟是红色节点，需要把兄弟变色然后旋转
+        if (brother.color === 'red') {
+          brother.color = 'black'
           node.parent.color = 'red'
           this.rotateRR(node.parent)
-          uncle = node.parent.right
+          brother = node.parent.right
         }
-        if (uncle.left.color === 'black' && uncle.right.color === 'black') {
-          uncle.color = 'red'
+        // 情形A2：兄弟节点是黑色节点
+        // 1.兄弟的左右孩子都是黑色，只需要把兄弟节点变成红色
+        if (this.isBlack(brother.left) && this.isBlack(brother.right)) {
+          brother.color = 'red'
           node = node.parent
         } else {
-          if (uncle.right.color === 'black') {
-            uncle.left.color = 'black'
-            uncle.color = 'red'
-            this.rotateLL(uncle)
-            uncle = node.parent.right
+          // 2.兄弟的右孩子是黑色
+          if (this.isBlack(brother.right)) {
+            brother.left.color = 'black'
+            brother.color = 'red'
+            this.rotateLL(brother)
+            brother = node.parent.right
           }
-          uncle.color = node.parent.color
+          // 3.兄弟的右孩子是红色
+          brother.color = node.parent.color
           node.parent.color = 'black'
-          uncle.right.color = 'black'
+          brother.right.color = 'black'
           this.rotateRR(node.parent)
           node = this.root // 结束循环
         }
       } else {
-        let uncle = node.parent.left
-        if (uncle.color === 'red') {
-          uncle.color = 'black'
+        // 情形B：删除的黑色节点在右边
+        // 从左边兄弟那里借调黑色节点
+        let brother = node.parent.left
+        // 情形B1：兄弟是红色节点，需要把兄弟变色然后旋转
+        if (brother.color === 'red') {
+          brother.color = 'black'
           node.parent.color = 'red'
           this.rotateLL(node.parent)
-          uncle = node.parent.left
+          brother = node.parent.left
         }
-        if (uncle.right.color === 'black' && uncle.left.color === 'black') {
-          uncle.color = 'red'
+        // 情形B2：兄弟节点是黑色节点
+        // 1.兄弟的左右孩子都是黑色，只需要把兄弟节点变成红色
+        if (this.isBlack(brother.left) && this.isBlack(brother.right)) {
+          brother.color = 'red'
           node = node.parent
         } else {
-          if (uncle.left.color === 'black') {
-            uncle.right.color = 'black'
-            uncle.color = 'red'
-            this.rotateRR(uncle)
-            uncle = node.parent.left
+          // 2.兄弟的左孩子是黑色
+          if (this.isBlack(brother.left)) {
+            brother.right.color = 'black'
+            brother.color = 'red'
+            this.rotateRR(brother)
+            brother = node.parent.left
           }
-          uncle.color = node.parent.color
+          // 2.兄弟的左孩子是红色
+          brother.color = node.parent.color
           node.parent.color = 'black'
-          uncle.left.color = 'black'
+          brother.left.color = 'black'
           this.rotateLL(node.parent)
           node = this.root // 结束循环
         }
       }
     }
+    // 节点是红色，直接变黑色
     node.color = 'black'
+  }
+  isBlack(node) {
+    return node ? node.color === 'black' : true
   }
 
   // 查找节点
@@ -249,25 +268,26 @@ class RedBlackTree {
   // 打印树
   print() {
     if (this.root === null) return console.log('Empty Tree')
-    const newline = new Node('\n', 'black')
-    const queueArr = [this.root, newline]
-    let stringTree = ''
-    while (queueArr.length) {
-      const treeNode = queueArr.shift()
-      stringTree += `${treeNode.key.toString()} `
-      if (treeNode === newline && queueArr.length) queueArr.push(newline)
-      if (treeNode.left !== null) queueArr.push(treeNode.left)
-      if (treeNode.right !== null) queueArr.push(treeNode.right)
+    const arr = [this.root, '']
+    let str = ''
+    while (arr.length) {
+      const curNode = arr.shift()
+      str += curNode.key ? `${curNode.key}${curNode.color} ` : '\n'
+      if (curNode?.left) arr.push(curNode.left)
+      if (curNode?.right) arr.push(curNode.right)
+      if (curNode === '' && arr.length) arr.push('')
     }
-    console.log(stringTree.slice(0, -2).trim())
+    console.log(str)
   }
 }
 
 let arr = [7, 5, 3, 9, 4, 1, 2]
 let tree = new RedBlackTree()
 arr.forEach((n) => tree.insert(n))
-console.log(tree)
-tree.delete(7)
-tree.delete(5)
-tree.delete(9)
-tree.delete(1)
+tree.print()
+// tree.delete(7)
+// tree.print()
+// tree.delete(5)
+// tree.print()
+// tree.delete(9)
+// tree.print()
