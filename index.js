@@ -135,6 +135,7 @@ class RedBlackTree {
       } else if (key > curNode.key) {
         curNode = curNode.right
       } else {
+        // 红黑树在删除时，删除的始终是只有一个子节点或者无子节点的叶节点。（这里的子节点不包含null）
         if (curNode.left && curNode.right) {
           let min = curNode.right
           while (min.left) min = min.left // 找到当前右子节点的最小节点
@@ -152,14 +153,14 @@ class RedBlackTree {
           } else {
             curNode.parent.right = subNode
           }
-          // 如果当前节点是黑色节点，被删除后失去平衡，需要重新平衡
+          // 如果当前节点是黑色节点，被删除后失去平衡，需要重新平衡。下面这个fixDelete函数只会执行 subNode.color = 'black'。因为subNode的颜色不可能是黑色。
           if (curNode.color === 'black') this.fixDelete(subNode)
         } else if (!curNode.parent) {
           // 如果没有子节点，并且是根节点
           this.root = null
         } else {
           // 如果没有子节点
-          // 如果当前节点是黑色节点，被删除后失去平衡，需要重新平衡
+          // 如果当前节点是黑色节点，被删除后没有补上来的节点，需要先进行平衡
           if (curNode.color === 'black') this.fixDelete(curNode)
           if (curNode.parent) {
             // 建立父子节点链接
@@ -177,7 +178,7 @@ class RedBlackTree {
   }
   // 删除节点后修复红黑树
   fixDelete(node) {
-    // 补上来的节点是黑色
+    // 补上来的节点是黑色。补上来的节点是不可能是黑色的，如果是黑色，说明违反了红黑树的规则。所以下面这一段代码只有删除无子节点的黑色节点时才会执行。
     while (node !== this.root && node.color === 'black') {
       // 情形A：删除的黑色节点在左边
       if (node === node.parent.left) {
@@ -194,16 +195,16 @@ class RedBlackTree {
         // 1.兄弟的左右孩子都是黑色，只需要把兄弟节点变成红色
         if (this.isBlack(brother.left) && this.isBlack(brother.right)) {
           brother.color = 'red'
-          node = node.parent
+          node = node.parent // 继续循环。
         } else {
-          // 2.兄弟的右孩子是黑色
+          // 2.兄弟的右孩子是黑色。左孩子一定是红色
           if (this.isBlack(brother.right)) {
             brother.left.color = 'black'
             brother.color = 'red'
             this.rotateLL(brother)
             brother = node.parent.right
           }
-          // 3.兄弟的右孩子是红色
+          // 3.兄弟的右孩子是红色。左孩子可能是红色，也可能是黑色
           brother.color = node.parent.color
           node.parent.color = 'black'
           brother.right.color = 'black'
@@ -225,16 +226,16 @@ class RedBlackTree {
         // 1.兄弟的左右孩子都是黑色，只需要把兄弟节点变成红色
         if (this.isBlack(brother.left) && this.isBlack(brother.right)) {
           brother.color = 'red'
-          node = node.parent
+          node = node.parent // 继续循环
         } else {
-          // 2.兄弟的左孩子是黑色
+          // 2.兄弟的左孩子是黑色。右孩子一定是红色
           if (this.isBlack(brother.left)) {
             brother.right.color = 'black'
             brother.color = 'red'
             this.rotateRR(brother)
             brother = node.parent.left
           }
-          // 2.兄弟的左孩子是红色
+          // 3.兄弟的左孩子是红色。右孩子可能是红色，也可能是黑色
           brother.color = node.parent.color
           node.parent.color = 'black'
           brother.left.color = 'black'
@@ -281,13 +282,11 @@ class RedBlackTree {
   }
 }
 
-let arr = [7, 5, 3, 9, 4, 1, 2]
+let arr = [7, 6, 3, 9, 4, 1, 2, 5]
 let tree = new RedBlackTree()
 arr.forEach((n) => tree.insert(n))
 tree.print()
-// tree.delete(7)
-// tree.print()
-// tree.delete(5)
-// tree.print()
-// tree.delete(9)
+tree.delete(7)
+tree.delete(5)
+tree.delete(9)
 // tree.print()
