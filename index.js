@@ -123,9 +123,9 @@ class RedBlackTree {
     if (!this.root) return
     let curNode = this.root
     while (curNode) {
-      if (key < curNode.key) {
+      if (key < curNode) {
         curNode = curNode.left
-      } else if (key > curNode.key) {
+      } else if (key > curNode) {
         curNode = curNode.right
       } else {
         break
@@ -158,7 +158,6 @@ class RedBlackTree {
         } else {
           curNode.parent.right = null
         }
-        curNode = null
       } else {
         this.root = null
       }
@@ -199,7 +198,7 @@ class RedBlackTree {
           this.rotateLL(curNode.parent)
           brother = curNode.parent.left
         }
-        if (this.isBlack(brother.right) && this.isBlack(brother.left)) {
+        if (this.isBlack(brother.left) && this.isBlack(brother.right)) {
           brother.color = 'red'
           curNode = curNode.parent
         } else {
