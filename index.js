@@ -198,7 +198,7 @@ class RedBlackTree {
           this.rotateLL(curNode.parent)
           brother = curNode.parent.left
         }
-        if (this.isBlack(brother.left) && this.isBlack(brother.right)) {
+        if (this.isBlack(brother.right) && this.isBlack(brother.left)) {
           brother.color = 'red'
           curNode = curNode.parent
         } else {
