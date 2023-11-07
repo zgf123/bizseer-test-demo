@@ -7,21 +7,21 @@ class Node {
     this.color = 'red'
   }
 }
-
 class RedBlackTree {
   constructor() {
     this.root = null
   }
   rotateLL(node) {
     let temp = node.left
-    let parent = node.parent
-    temp.parent = parent
-    if (!parent) {
-      this.root = temp
-    } else if ((node = parent.left)) {
-      parent.left = temp
+    temp.parent = node.parent
+    if (node.parent) {
+      if (node === node.parent.left) {
+        node.parent.left = temp
+      } else {
+        node.parent.right = temp
+      }
     } else {
-      parent.right = temp
+      this.root = temp
     }
     node.left = temp.right
     if (temp.right) temp.right.parent = node
@@ -30,14 +30,15 @@ class RedBlackTree {
   }
   rotateRR(node) {
     let temp = node.right
-    let parent = node.parent
     temp.parent = node.parent
-    if (!parent) {
-      this.root = temp
-    } else if ((node = parent.left)) {
-      parent.left = temp
+    if (node.parent) {
+      if (node === node.parent.left) {
+        node.parent.left = temp
+      } else {
+        node.parent.right = temp
+      }
     } else {
-      parent.right = temp
+      this.root = temp
     }
     node.right = temp.left
     if (temp.left) temp.left.parent = node
@@ -46,183 +47,77 @@ class RedBlackTree {
   }
   insert(key) {
     let newNode = new Node(key)
-    if (!this.root) {
-      newNode.color = 'black'
-      this.root = newNode
-    } else {
+    if (this.root) {
       let curNode = this.root
       while (curNode) {
-        if (key === curNode.key) {
-          console.log('key值相同')
-          return
+        if (key < curNode.key) {
+          if (curNode.left) {
+            curNode = curNode.left
+          } else {
+            curNode.left = newNode
+            newNode.parent = curNode
+            break
+          }
         } else if (key > curNode.key) {
           if (curNode.right) {
             curNode = curNode.right
           } else {
-            newNode.parent = curNode
             curNode.right = newNode
-            break
-          }
-        } else if (key < curNode.key) {
-          if (curNode.left) {
-            curNode = curNode.left
-          } else {
             newNode.parent = curNode
-            curNode.left = newNode
             break
           }
+        } else {
+          break
         }
       }
       this.insertFix(newNode)
+    } else {
+      this.root = newNode
+      this.root.color = 'black'
     }
   }
   insertFix(node) {
     let curNode = node
     while (curNode.color === 'red' && curNode.parent?.color === 'red') {
       let parent = curNode.parent
-      let grandparent = parent.parent
-      if (parent === grandparent.left) {
-        let uncle = grandparent.right
+      let grandParent = parent.parent
+      if (parent === grandParent.left) {
+        let uncle = grandParent.right
         if (uncle?.color === 'red') {
           parent.color = 'black'
           uncle.color = 'black'
-          grandparent.color = 'red'
-          curNode = grandparent
+          grandParent.color = 'red'
+          curNode = grandParent
         } else {
           if (curNode === parent.right) {
             this.rotateRR(parent)
             ;[curNode, parent] = [parent, curNode]
           }
-          parent.color = 'black'
-          grandparent.color = 'red'
-          this.rotateLL(grandparent)
+          parent.color = 'balck'
+          grandParent.color = 'red'
+          this.rotateLL(grandParent)
         }
       } else {
-        let uncle = grandparent.left
+        let uncle = grandParent.left
         if (uncle?.color === 'red') {
-          parent.color = 'black'
           uncle.color = 'black'
-          grandparent.color = 'red'
-          curNode = grandparent
-        } else {
-          if (curNode === parent.left) {
-            this.rotateLL(parent)
-            ;[curNode, parent] = [parent, curNode]
-          }
           parent.color = 'black'
-          grandparent.color = 'red'
-          this.rotateRR(grandparent)
+          grandParent.color = 'red'
+          curNode = grandParent
         }
+        if (curNode === parent.left) {
+          this.rotateLL(parent)
+          ;[parent, curNode] = [curNode, parent]
+        }
+        parent.color = 'black'
+        grandParent.color = 'red'
+        this.rotateRR(grandParent)
       }
     }
     this.root.color = 'black'
   }
 
-  delete(key) {
-    let curNode = this.root
-    while (curNode) {
-      if (key < curNode.key) {
-        curNode = curNode.left
-      } else if (key > curNode.key) {
-        curNode = curNode.right
-      } else {
-        if (curNode.left && curNode.right) {
-          let tempNode = curNode.left
-          while (tempNode.right) tempNode = tempNode.right
-          curNode.key = tempNode.key
-          curNode = tempNode
-        }
-        let subNode = curNode.left || curNode.right
-        if (subNode) {
-          subNode.parent = curNode.parent
-          if (!curNode.parent) {
-            this.root = subNode
-          } else if (curNode === curNode.parent.left) {
-            curNode.parent.left = subNode
-          } else {
-            curNode.parent.right = subNode
-          }
-          if (curNode.color === 'black') this.deleteFix(subNode)
-        } else {
-          if (!curNode.parent) {
-            this.root = null
-          } else {
-            if (curNode.color === 'black') this.deleteFix(curNode)
-            if (curNode.parent) {
-              if (curNode === curNode.parent.left) {
-                curNode.parent.left = null
-              } else {
-                curNode.parent.right = null
-              }
-              curNode.parent = null
-            }
-          }
-        }
-        break
-      }
-    }
-  }
-  deleteFix(node) {
-    let curNode = node
-    while (curNode !== this.root && curNode.color === 'black') {
-      if (curNode === curNode.parent.left) {
-        let brother = curNode.parent.right
-        if (brother.color === 'red') {
-          brother.color = 'black'
-          curNode.parent.color = 'red'
-          this.rotateRR(curNode.parent)
-          brother = curNode.parent.right
-        }
-        if (this.isBlack(brother.left) && this.isBlack(brother.right)) {
-          brother.color = 'red'
-          curNode = curNode.parent
-        } else {
-          if (this.isBlack(brother.right)) {
-            brother.color = 'red'
-            brother.left.color = 'black'
-            this.rotateLL(brother)
-            brother = curNode.parent.right
-          }
-          brother.color = curNode.parent.color
-          curNode.parent.color = 'black'
-          brother.right.color = 'black'
-          this.rotateRR(curNode.parent)
-          curNode = this.root
-        }
-      } else {
-        let brother = curNode.parent.left
-        if (brother.color === 'red') {
-          brother.color = 'black'
-          curNode.parent.color = 'red'
-          this.rotateLL(curNode.parent)
-          brother = curNode.parent.left
-        }
-        if (this.isBlack(brother.left) && this.isBlack(brother.right)) {
-          brother.color = 'red'
-          curNode = curNode.parent
-        } else {
-          if (this.isBlack(brother.left)) {
-            brother.color = 'red'
-            brother.right.color = 'black'
-            this.rotateRR(brother)
-            brother = curNode.parent.left
-          }
-          brother.color = curNode.parent.color
-          curNode.parent.color = 'black'
-          brother.left.color = 'black'
-          this.rotateLL(curNode.parent)
-          curNode = this.root
-        }
-      }
-    }
-    curNode.color = 'black'
-  }
-  isBlack(node) {
-    return node ? node.color === 'black' : true
-  }
-
   print() {
-    if (!this.root) return
     let arr = [this.root, 'br']
     let str = ''
     while (arr.length) {
@@ -230,9 +125,7 @@ class RedBlackTree {
       str += item === 'br' ? '\n' : `${item.key}${item.color} `
       if (item.left) arr.push(item.left)
       if (item.right) arr.push(item.right)
-      if (item === 'br' && arr.length) {
-        arr.push('br')
-      }
+      if (arr.length && item === 'br') arr.push('br')
     }
     console.log(str)
   }
@@ -241,7 +134,7 @@ class RedBlackTree {
 let arr = [7, 6, 3, 9, 4, 1, 2, 5]
 let tree = new RedBlackTree()
 arr.forEach((n) => tree.insert(n))
-tree.delete(4)
-tree.delete(7)
-tree.delete(6)
+// tree.delete(4)
+// tree.delete(7)
+// tree.delete(6)
 tree.print()
