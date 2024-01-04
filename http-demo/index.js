@@ -1,7 +1,7 @@
 console.log('start')
 
 var xhr = new XMLHttpRequest()
-xhr.open('get', '', true)
+xhr.open('get', 'http://10.0.60.147:38090/api/upm-service/manage/system_settings', true)
 xhr.send(null)
 
 console.log(xhr.readyState, xhr.status, xhr.responseText)
