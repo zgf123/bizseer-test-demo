@@ -1,0 +1,17 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: stretch;
+  align-content: stretch;
+}
+.item {
+  order: 0;
+  flex-grow: 0;
+  flex-shrink: 1;
+  flex-basis: 0%;
+  flex: 0 1 0%;
+  align-self: flex-end;
+}
