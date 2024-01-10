@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="./index.js"></script>
+    <style>
+      .container {
+        display: flex;
+        flex-direction: row;
+        background-color: bisque;
+        height: 200px;
+        align-items: stretch;
+      }
+      .item {
+        background-color: pink;
+        flex: none;
+        border: 1px solid red;
+        width: 20px;
+      }
+      .item1 {
+        background-color: aqua;
+        width: 50%;
+        flex-basis: auto;
+      }
+      .item2 {
+        align-self: flex-end;
+        height: 50px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="item"></div>
+      <div class="item item2"></div>
+      <div class="item"></div>
+      <div class="item item1"></div>
+    </div>
+  </body>
+</html>
