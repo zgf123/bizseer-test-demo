@@ -14,6 +14,7 @@ import MonacoDemo from './components/MonacoDemo'
 import LayoutDemo1 from './components/layout/LayoutDemo1'
 import LayoutDemo2 from './components/layout/LayoutDemo2'
 import GetBoundingClientRect from './components/layout/GetBoundingClientRect'
+import MyTestDemo from './components/MyTestDemo'
 
 const App = () => {
   return (
@@ -32,6 +33,7 @@ const App = () => {
         <Route path="/layout-demo1" element={<LayoutDemo1 />} />
         <Route path="/layout-demo2" element={<LayoutDemo2 />} />
         <Route path="/layout-get-bounding-client-rect" element={<GetBoundingClientRect />} />
+        <Route path="/mytest-demo" element={<MyTestDemo />} />
       </Routes>
     </BrowserRouter>
   )
